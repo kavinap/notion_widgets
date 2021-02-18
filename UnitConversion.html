@@ -66,11 +66,6 @@
       <div style="width: 211px; display: inline-block;">
         <input id="input" class="selector">
         <select id="inVolUnits" class="unit sel">
-          <option value="floz">floz</option>
-          <option value="Cup"  selected="selected">Cup</option>
-          <option value="Pint">Pint</option>
-          <option value="Quart">Quart</option>
-          <option value="Gallon">Gallon</option>
         </select>
       </div>
       <div class="equals">
@@ -79,11 +74,6 @@
       <div style="width: 211px; display: inline-block;">
         <input id="output" class="selector">
         <select id="outVolUnits" class="unit sel">
-            <option value="floz">floz</option>
-            <option value="Cup">Cup</option>
-            <option value="Pint">Pint</option>
-            <option value="Quart">Quart</option>
-            <option value="Gallon">Gallon</option>
           </select>
         </div>
       </div>
@@ -99,6 +89,9 @@
     let equation;
 
     function onloadFunc(){
+      inVolUnits.innerHTML = makeSelect()
+      outVolUnits.innerHTML = makeSelect()
+
       input.value = (1).toFixed(5)
       output.value = `${eval(measurer.value)[inVolUnits.value][outVolUnits.value](input.value)}`
     }
@@ -118,7 +111,7 @@
       }else{
         inVolUnits.value = newval1
       }
-      output.value = `${eval(measurer.value)[outVolUnits.value][inVolUnits.value](output.value)}`
+      input.value = `${eval(measurer.value)[outVolUnits.value][inVolUnits.value](output.value)}`
     });
     inVolUnits.addEventListener('mousedown', (e) => {
       oldval1 = inVolUnits.value
@@ -159,7 +152,7 @@
         str += "<option selected='selected' value=" + val + ">" + val + "</option>"
 
       } else {
-        str += "<option value=" + val + ">" + val + "</option>"
+        str += "<option value=" + val + ">" + eval(measurer.value)[val].name + "</option>"
       }
         count++
       }
@@ -171,36 +164,41 @@
 }
 
   const volumeUnits = {
-      floz: {
-        floz(i){return (i / 1).toFixed(5);},
+      Fluid_oz: {
+        name: "Fluid Ounce",
+        Fluid_oz(i){return (i / 1).toFixed(5);},
         Cup(i){return (i / 8).toFixed(5);},
         Pint(i){return (i / 16).toFixed(5);},
         Quart(i){return (i / 32).toFixed(5);},
         Gallon(i){return (i / 128).toFixed(5);}
       },
       Cup: {
-        floz(i){return (i * 8).toFixed(5);},
+        name: "Cup",
+        Fluid_oz(i){return (i * 8).toFixed(5);},
         Cup(i){return (i / 1).toFixed(5);},
         Pint(i){return (i / 2).toFixed(5);},
         Quart(i){return (i / 4).toFixed(5);},
         Gallon(i){return (i / 16).toFixed(5);}
       },
       Pint: {
-        floz(i){return (i * 16).toFixed(5);},
+        name: "Pint",
+        Fluid_oz(i){return (i * 16).toFixed(5);},
         Cup(i){return (i * 2).toFixed(5);},
         Pint(i){return (i / 1).toFixed(5);},
         Quart(i){return (i / 2).toFixed(5);},
         Gallon(i){return (i / 8).toFixed(5);}
       },
       Quart: {
-        floz(i){return (i * 32).toFixed(5);},
+        name: "Quart",
+        Fluid_oz(i){return (i * 32).toFixed(5);},
         Cup(i){return (i * 4).toFixed(5);},
         Pint(i){return (i * 2).toFixed(5);},
         Quart(i){return (i / 1).toFixed(5);},
         Gallon(i){return (i / 4).toFixed(5);}
       },
       Gallon: {
-        floz(i){return (i * 128).toFixed(5);},
+        name: "Gallon",
+        Fluid_oz(i){return (i * 128).toFixed(5);},
         Cup(i){return (i * 16).toFixed(5);},
         Pint(i){return (i * 8).toFixed(5);},
         Quart(i){return (i * 4).toFixed(5);},
@@ -210,16 +208,19 @@
 
   const massUnits = {
     oz: {
+      name: "Ounce",
       oz(i){return (i / 1).toFixed(5);},
       pound(i){return (i / 16).toFixed(5);},
       ton(i){return (i / 32000).toFixed(5);}
     },
     pound: {
+      name: "pound",
       oz(i){return (i * 16).toFixed(5);},
       pound(i){return (i / 1).toFixed(5);},
       ton(i){return (i / 2000).toFixed(5);}
     },
     ton: {
+      name: "US ton",
       oz(i){return (i * 32000).toFixed(5);},
       pound(i){return (i * 2000).toFixed(5);},
       ton(i){return (i / 1).toFixed(5);}
@@ -229,16 +230,19 @@
 
   const temperatureUnits = {
     Fahrenheit: {
-        Fahrenheit(i){return (i / 1).toFixed(5);},
-        Celsius(i){return ((i - 32) * (5/9) ).toFixed(5);},
-        Kelvan(i){return ((i - 32) * (5/9) + 273.15).toFixed(5);}
+      name: "Fahrenheit",
+      Fahrenheit(i){return (i / 1).toFixed(5);},
+      Celsius(i){return ((i - 32) * (5/9) ).toFixed(5);},
+      Kelvan(i){return ((i - 32) * (5/9) + 273.15).toFixed(5);}
     },
     Celsius: {
+      name: "Celsius",
       Fahrenheit(i){return ((i * (9/5)) + 32).toFixed(5);},
       Celsius(i){return (i / 1).toFixed(5);},
       Kelvan(i){return (i + 273.15).toFixed(5);}
     },
     Kelvan: {
+      name: "Kelvan",
       Fahrenheit(i){return ((i - 273.15) * (9/5) + 32).toFixed(5);},
       Celsius(i){return (i - 273.15).toFixed(5);},
       Kelvan(i){return (i / 1).toFixed(5);}
