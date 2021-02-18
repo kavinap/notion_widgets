@@ -88,16 +88,199 @@
     let output = document.getElementById('output');
     let equation;
 
-    function onloadFunc(){
-      inVolUnits.innerHTML = makeSelect()
-      outVolUnits.innerHTML = makeSelect()
+    var oldval
+    var oldval1
+    var newval
+    var newval1
 
-      while (inVolUnits.value == outVolUnits.value){
-        outVolUnits.innerHTML = makeSelect()
+    const volumeUnits = {
+      //Metric
+      Mililiters: {
+        name: "Mililiters",
+        Mililiters(i){return (i / 1).toFixed(5);},
+        Liters(i){return (i / 1000).toFixed(5);},
+
+        Teaspoon(i){return (i/4.929).toFixed(5);},
+        Tablespoon(i){return (i / 14.787).toFixed(5)},
+        Fluid_oz(i){return (i / 29.574).toFixed(5)},
+        Cup(i){return (i / 240).toFixed(5);},
+        Pint(i){return (i / 473).toFixed(5);},
+        Quart(i){return (i / 946).toFixed(5);},
+        Gallon(i){return (i / 3785).toFixed(5);}
+      },
+      Liters: {
+        name: "Liters",
+        Mililiters(i){return (this.Liters(i) * 1000).toFixed(5);},
+        Liters(i){return (i / 1).toFixed(5);},
+
+        Teaspoon(i){return (i * 203).toFixed(5);},
+        Tablespoon(i){return (i * 67.628).toFixed(5)},
+        Fluid_oz(i){return (i * 33.814).toFixed(5)},
+        Cup(i){return (i * 4.167).toFixed(5);},
+        Pint(i){return (i * 2.113).toFixed(5);},
+        Quart(i){return (i * 1.057).toFixed(5);},
+        Gallon(i){return (i / 3.785).toFixed(5);}
+      },
+      //Imperial
+      Teaspoon: {
+        name: "Teaspoon",
+        Mililiters(i){return (i * 4.929).toFixed(5);},
+        Liters(i){return (i / 203).toFixed(5);},
+
+        Teaspoon(i){return (i/1).toFixed(5);},
+        Tablespoon(i){return (i/3).toFixed(5)},
+        Fluid_oz(i){return (i/6).toFixed(5)},
+        Cup(i){return (i / 48.692).toFixed(5);},
+        Pint(i){return (i / 96).toFixed(5);},
+        Quart(i){return (i / 192).toFixed(5);},
+        Gallon(i){return (i / 768).toFixed(5);}
+      },
+      Tablespoon: {
+        name: "Tablespoon",
+        Mililiters(i){return (i * 14.787).toFixed(5);},
+        Liters(i){return (i / 67.628).toFixed(5);},
+
+        Teaspoon(i){return (i*3).toFixed(5);},
+        Tablespoon(i){return (i/1).toFixed(5)},
+        Fluid_oz(i){return (i/2).toFixed(5)},
+        Cup(i){return (i / 16.231).toFixed(5);},
+        Pint(i){return (i / 32).toFixed(5);},
+        Quart(i){return (i / 64).toFixed(5);},
+        Gallon(i){return (i / 256).toFixed(5);}
+      },
+      Fluid_oz: {
+        name: "Fluid Ounce",
+        Mililiters(i){return (i * 29.574).toFixed(5);},
+        Liters(i){return (i / 33.814).toFixed(5);},
+
+        Teaspoon(i){return (i*6).toFixed(5);},
+        Tablespoon(i){return (i*2).toFixed(5);},
+        Fluid_oz(i){return (i / 1).toFixed(5);},
+        Cup(i){return (i / 8.115).toFixed(5);},
+        Pint(i){return (i / 16).toFixed(5);},
+        Quart(i){return (i / 32).toFixed(5);},
+        Gallon(i){return (i / 128).toFixed(5);}
+      },
+      Cup: {
+        name: "Cup",
+        Mililiters(i){return (i * 240).toFixed(5);},
+        Liters(i){return (i / 4.167).toFixed(5);},
+
+        Teaspoon(i){return (i*48.692).toFixed(5);},
+        Tablespoon(i){return (i*16.231).toFixed(5);},
+        Fluid_oz(i){return (i * 8.115).toFixed(5);},
+        Cup(i){return (i / 1).toFixed(5);},
+        Pint(i){return (i / 1.972).toFixed(5);},
+        Quart(i){return (i / 3.943).toFixed(5);},
+        Gallon(i){return (i / 15.773).toFixed(5);}
+      },
+      Pint: {
+        name: "Pint",
+        Mililiters(i){return (i * 473).toFixed(5);},
+        Liters(i){return (i / 2.113).toFixed(5);},
+
+        Teaspoon(i){return (i*96).toFixed(5);},
+        Tablespoon(i){return (i*32).toFixed(5);},
+        Fluid_oz(i){return (i * 16).toFixed(5);},
+        Cup(i){return (i * 1.972).toFixed(5);},
+        Pint(i){return (i / 1).toFixed(5);},
+        Quart(i){return (i / 2).toFixed(5);},
+        Gallon(i){return (i / 8).toFixed(5);}
+      },
+      Quart: {
+        name: "Quart",
+        Mililiters(i){return (i * 946).toFixed(5);},
+        Liters(i){return (i / 1.057).toFixed(5);},
+
+        Teaspoon(i){return (i*192).toFixed(5);},
+        Tablespoon(i){return (i*64).toFixed(5);},
+        Fluid_oz(i){return (i * 32).toFixed(5);},
+        Cup(i){return (i * 3.943).toFixed(5);},
+        Pint(i){return (i * 2).toFixed(5);},
+        Quart(i){return (i / 1).toFixed(5);},
+        Gallon(i){return (i / 4).toFixed(5);}
+      },
+      Gallon: {
+        name: "Gallon",
+        Mililiters(i){return (i * 3785).toFixed(5);},
+        Liters(i){return (i * 3.785).toFixed(5);},
+
+        Teaspoon(i){return (i*768).toFixed(5);},
+        Tablespoon(i){return (i*256).toFixed(5);},
+        Fluid_oz(i){return (i * 128).toFixed(5);},
+        Cup(i){return (i * 15.773).toFixed(5);},
+        Pint(i){return (i * 8).toFixed(5);},
+        Quart(i){return (i * 4).toFixed(5);},
+        Gallon(i){return (i / 1).toFixed(5);}
+      }
+    }
+    const massUnits = {
+      gram: {
+        name: "Gram",
+        gram(i){return (i/1).toFixed(5);},
+        kilogram(i){return (i/1000).toFixed(5);},
+
+        oz(i){return (i / 28.35).toFixed(5);},
+        pound(i){return (this.oz(i) / 16).toFixed(5);},
+        USton(i){return (this.oz(i) / 32000).toFixed(5);}
+      },
+      kilogram: {
+        name: "Kilogram",
+        gram(i){return (i/1000).toFixed(5);},
+        kilogram(i){return (i/1).toFixed(5);},
+
+        oz(i){return (i * 35.274).toFixed(5);},
+        pound(i){return (i / 2.205).toFixed(5);},
+        USton(i){return (i / 907.185).toFixed(5);}
+      },
+      oz: {
+        name: "Ounce",
+        gram(i){return (i*28.35).toFixed(5);},
+        kilogram(i){return (i / 35.274).toFixed(5);},
+
+        oz(i){return (i / 1).toFixed(5);},
+        pound(i){return (i / 16).toFixed(5);},
+        USton(i){return (i / 32000).toFixed(5);}
+      },
+      pound: {
+        name: "Pound",
+        gram(i){return (i*454).toFixed(5);},
+        kilogram(i){return (i/2.205).toFixed(5);},
+
+        oz(i){return (i * 16).toFixed(5);},
+        pound(i){return (i / 1).toFixed(5);},
+        USton(i){return (i / 2000).toFixed(5);}
+      },
+      USton: {
+        name: "US Ton",
+        gram(i){return (i * 907185).toFixed(5);},
+        kilogram(i){return (i * 907.185).toFixed(5);},
+
+        oz(i){return (i * 32000).toFixed(5);},
+        pound(i){return (i * 2000).toFixed(5);},
+        USton(i){return (i / 1).toFixed(5);}
       }
 
-      input.value = (1).toFixed(5)
-      output.value = `${eval(measurer.value)[inVolUnits.value][outVolUnits.value](input.value)}`
+    }
+    const temperatureUnits = {
+      Fahrenheit: {
+        name: "Fahrenheit",
+        Fahrenheit(i){return (i / 1).toFixed(5);},
+        Celsius(i){return ((i - 32) * (5/9) ).toFixed(5);},
+        Kelvan(i){return ((i - 32) * (5/9) + 273.15).toFixed(5);}
+      },
+      Celsius: {
+        name: "Celsius",
+        Fahrenheit(i){return ((i * (9/5)) + 32).toFixed(5);},
+        Celsius(i){return (i / 1).toFixed(5);},
+        Kelvan(i){return (i + 273.15).toFixed(5);}
+      },
+      Kelvan: {
+        name: "Kelvan",
+        Fahrenheit(i){return ((i - 273.15) * (9/5) + 32).toFixed(5);},
+        Celsius(i){return (i - 273.15).toFixed(5);},
+        Kelvan(i){return (i / 1).toFixed(5);}
+      }
     }
 
     input.addEventListener('keyup', (e) => {
@@ -106,8 +289,6 @@
     output.addEventListener('keyup', (e) => {
       input.value = `${eval(measurer.value)[outVolUnits.value][inVolUnits.value](output.value)}`
     });
-    var oldval1
-    var newval1
     inVolUnits.addEventListener('change', (e) => {
       newval1 = inVolUnits.value
       if (newval1 == outVolUnits.value) {
@@ -121,8 +302,6 @@
       oldval1 = inVolUnits.value
       //output.value = `${eval(measurer.value)[inVolUnits.value][outVolUnits.value](input.value)}`
     });
-    var oldval
-    var newval
     outVolUnits.addEventListener('change', (e) => {
       newval = outVolUnits.value
       if (newval == inVolUnits.value) {
@@ -149,6 +328,17 @@
       output.value = `${eval(measurer.value)[inVolUnits.value][outVolUnits.value](input.value)}`
     });
 
+    function onloadFunc(){
+      inVolUnits.innerHTML = makeSelect()
+      outVolUnits.innerHTML = makeSelect()
+
+      while (inVolUnits.value == outVolUnits.value){
+        outVolUnits.innerHTML = makeSelect()
+      }
+
+      input.value = (1).toFixed(5)
+      output.value = `${eval(measurer.value)[inVolUnits.value][outVolUnits.value](input.value)}`
+    }
     function makeSelect(){
       var str;
       size = Object.keys(eval(measurer.value)).length;
@@ -166,201 +356,8 @@
       }
       return str
     }
-
     function randomIntFromInterval(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-
-  const volumeUnits = {
-    //Metric
-    Mililiters: {
-      name: "Mililiters",
-      Mililiters(i){return (i / 1).toFixed(5);},
-      Liters(i){return (i / 1000).toFixed(5);},
-
-      Teaspoon(i){return (i/4.929).toFixed(5);},
-      Tablespoon(i){return (i / 14.787).toFixed(5)},
-      Fluid_oz(i){return (i / 29.574).toFixed(5)},
-      Cup(i){return (i / 240).toFixed(5);},
-      Pint(i){return (i / 473).toFixed(5);},
-      Quart(i){return (i / 946).toFixed(5);},
-      Gallon(i){return (i / 3785).toFixed(5);}
-    },
-    Liters: {
-      name: "Liters",
-      Mililiters(i){return (this.Liters(i) * 1000).toFixed(5);},
-      Liters(i){return (i / 1).toFixed(5);},
-
-      Teaspoon(i){return (i * 203).toFixed(5);},
-      Tablespoon(i){return (i * 67.628).toFixed(5)},
-      Fluid_oz(i){return (i * 33.814).toFixed(5)},
-      Cup(i){return (i * 4.167).toFixed(5);},
-      Pint(i){return (i * 2.113).toFixed(5);},
-      Quart(i){return (i * 1.057).toFixed(5);},
-      Gallon(i){return (i / 3.785).toFixed(5);}
-    },
-    //Imperial
-    Teaspoon: {
-      name: "Teaspoon",
-      Mililiters(i){return (i * 4.929).toFixed(5);},
-      Liters(i){return (i / 203).toFixed(5);},
-
-      Teaspoon(i){return (i/1).toFixed(5);},
-      Tablespoon(i){return (i/3).toFixed(5)},
-      Fluid_oz(i){return (i/6).toFixed(5)},
-      Cup(i){return (i / 48.692).toFixed(5);},
-      Pint(i){return (i / 96).toFixed(5);},
-      Quart(i){return (i / 192).toFixed(5);},
-      Gallon(i){return (i / 768).toFixed(5);}
-    },
-    Tablespoon: {
-      name: "Tablespoon",
-      Mililiters(i){return (i * 14.787).toFixed(5);},
-      Liters(i){return (i / 67.628).toFixed(5);},
-
-      Teaspoon(i){return (i*3).toFixed(5);},
-      Tablespoon(i){return (i/1).toFixed(5)},
-      Fluid_oz(i){return (i/2).toFixed(5)},
-      Cup(i){return (i / 16.231).toFixed(5);},
-      Pint(i){return (i / 32).toFixed(5);},
-      Quart(i){return (i / 64).toFixed(5);},
-      Gallon(i){return (i / 256).toFixed(5);}
-    },
-    Fluid_oz: {
-      name: "Fluid Ounce",
-      Mililiters(i){return (i * 29.574).toFixed(5);},
-      Liters(i){return (i / 33.814).toFixed(5);},
-
-      Teaspoon(i){return (i*6).toFixed(5);},
-      Tablespoon(i){return (i*2).toFixed(5);},
-      Fluid_oz(i){return (i / 1).toFixed(5);},
-      Cup(i){return (i / 8.115).toFixed(5);},
-      Pint(i){return (i / 16).toFixed(5);},
-      Quart(i){return (i / 32).toFixed(5);},
-      Gallon(i){return (i / 128).toFixed(5);}
-    },
-    Cup: {
-      name: "Cup",
-      Mililiters(i){return (i * 240).toFixed(5);},
-      Liters(i){return (i / 4.167).toFixed(5);},
-
-      Teaspoon(i){return (i*48.692).toFixed(5);},
-      Tablespoon(i){return (i*16.231).toFixed(5);},
-      Fluid_oz(i){return (i * 8.115).toFixed(5);},
-      Cup(i){return (i / 1).toFixed(5);},
-      Pint(i){return (i / 1.972).toFixed(5);},
-      Quart(i){return (i / 3.943).toFixed(5);},
-      Gallon(i){return (i / 15.773).toFixed(5);}
-    },
-    Pint: {
-      name: "Pint",
-      Mililiters(i){return (i * 473).toFixed(5);},
-      Liters(i){return (i / 2.113).toFixed(5);},
-
-      Teaspoon(i){return (i*96).toFixed(5);},
-      Tablespoon(i){return (i*32).toFixed(5);},
-      Fluid_oz(i){return (i * 16).toFixed(5);},
-      Cup(i){return (i * 1.972).toFixed(5);},
-      Pint(i){return (i / 1).toFixed(5);},
-      Quart(i){return (i / 2).toFixed(5);},
-      Gallon(i){return (i / 8).toFixed(5);}
-    },
-    Quart: {
-      name: "Quart",
-      Mililiters(i){return (i * 946).toFixed(5);},
-      Liters(i){return (i / 1.057).toFixed(5);},
-
-      Teaspoon(i){return (i*192).toFixed(5);},
-      Tablespoon(i){return (i*64).toFixed(5);},
-      Fluid_oz(i){return (i * 32).toFixed(5);},
-      Cup(i){return (i * 3.943).toFixed(5);},
-      Pint(i){return (i * 2).toFixed(5);},
-      Quart(i){return (i / 1).toFixed(5);},
-      Gallon(i){return (i / 4).toFixed(5);}
-    },
-    Gallon: {
-      name: "Gallon",
-      Mililiters(i){return (i * 3785).toFixed(5);},
-      Liters(i){return (i * 3.785).toFixed(5);},
-
-      Teaspoon(i){return (i*768).toFixed(5);},
-      Tablespoon(i){return (i*256).toFixed(5);},
-      Fluid_oz(i){return (i * 128).toFixed(5);},
-      Cup(i){return (i * 15.773).toFixed(5);},
-      Pint(i){return (i * 8).toFixed(5);},
-      Quart(i){return (i * 4).toFixed(5);},
-      Gallon(i){return (i / 1).toFixed(5);}
-    }
-  }
-
-  const massUnits = {
-    gram: {
-      name: "Gram",
-      gram(i){return (i/1).toFixed(5);},
-      kilogram(i){return (i/1000).toFixed(5);},
-
-      oz(i){return (i / 28.35).toFixed(5);},
-      pound(i){return (this.oz(i) / 16).toFixed(5);},
-      USton(i){return (this.oz(i) / 32000).toFixed(5);}
-    },
-    kilogram: {
-      name: "Kilogram",
-      gram(i){return (i/1000).toFixed(5);},
-      kilogram(i){return (i/1).toFixed(5);},
-
-      oz(i){return (i * 35.274).toFixed(5);},
-      pound(i){return (i / 2.205).toFixed(5);},
-      USton(i){return (i / 907.185).toFixed(5);}
-    },
-    oz: {
-      name: "Ounce",
-      gram(i){return (i*28.35).toFixed(5);},
-      kilogram(i){return (i / 35.274).toFixed(5);},
-
-      oz(i){return (i / 1).toFixed(5);},
-      pound(i){return (i / 16).toFixed(5);},
-      USton(i){return (i / 32000).toFixed(5);}
-    },
-    pound: {
-      name: "Pound",
-      gram(i){return (i*454).toFixed(5);},
-      kilogram(i){return (i/2.205).toFixed(5);},
-
-      oz(i){return (i * 16).toFixed(5);},
-      pound(i){return (i / 1).toFixed(5);},
-      USton(i){return (i / 2000).toFixed(5);}
-    },
-    USton: {
-      name: "US Ton",
-      gram(i){return (i * 907185).toFixed(5);},
-      kilogram(i){return (i * 907.185).toFixed(5);},
-
-      oz(i){return (i * 32000).toFixed(5);},
-      pound(i){return (i * 2000).toFixed(5);},
-      USton(i){return (i / 1).toFixed(5);}
-    }
-
-  }
-
-  const temperatureUnits = {
-    Fahrenheit: {
-      name: "Fahrenheit",
-      Fahrenheit(i){return (i / 1).toFixed(5);},
-      Celsius(i){return ((i - 32) * (5/9) ).toFixed(5);},
-      Kelvan(i){return ((i - 32) * (5/9) + 273.15).toFixed(5);}
-    },
-    Celsius: {
-      name: "Celsius",
-      Fahrenheit(i){return ((i * (9/5)) + 32).toFixed(5);},
-      Celsius(i){return (i / 1).toFixed(5);},
-      Kelvan(i){return (i + 273.15).toFixed(5);}
-    },
-    Kelvan: {
-      name: "Kelvan",
-      Fahrenheit(i){return ((i - 273.15) * (9/5) + 32).toFixed(5);},
-      Celsius(i){return (i - 273.15).toFixed(5);},
-      Kelvan(i){return (i / 1).toFixed(5);}
-    }
-  }
   </script>
 </html>
